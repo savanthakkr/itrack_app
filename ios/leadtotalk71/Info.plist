@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>leadtotalk71</string>
+	<string>I-Track Technologies</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -26,14 +26,74 @@
 	<true/>
 	<key>NSAppTransportSecurity</key>
 	<dict>
-	  <!-- Do not change NSAllowsArbitraryLoads to true, or you will risk app rejection! -->
 		<key>NSAllowsArbitraryLoads</key>
 		<false/>
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>Hello World</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>Hello World</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>Hello World</string>
+	<key>NSCalendarsFullAccessUsageDescription</key>
+	<string>Hello World</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>This app requires access to your calendar to schedule events.</string>
+	<key>NSCalendarsWriteOnlyAccessUsageDescription</key>
+	<string>Hello World</string>
+	<key>NSCameraUsageDescription</key>
+	<string>The app requires access to the camera for scanning barcodes and uploading delivery-related images to ensure accurate tracking and documentation.</string>
+	<key>NSContactsUsageDescription</key>
+	<string>Hello World</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Hello World</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>The app requires location access to track real-time delivery progress, optimize routes, and ensure efficient logistics management.</string>
+	<key>NSLocationTemporaryUsageDescriptionDictionary</key>
+	<dict>
+		<key>YOUR-PURPOSE-KEY</key>
+		<string>[REASON]</string>
+	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>The app requires location access to track real-time delivery progress, optimize routes, and ensure efficient logistics management.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Hello World</string>
+	<key>NSMotionUsageDescription</key>
+	<string>Hello World</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Hello World</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>We need access to your photo library to upload and select images.</string>
+	<key>NSRemindersFullAccessUsageDescription</key>
+	<string>Hello World</string>
+	<key>NSSiriUsageDescription</key>
+	<string>Hello World</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Hello World</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>AntDesign.ttf</string>
+		<string>Entypo.ttf</string>
+		<string>EvilIcons.ttf</string>
+		<string>Feather.ttf</string>
+		<string>FontAwesome.ttf</string>
+		<string>FontAwesome5_Brands.ttf</string>
+		<string>FontAwesome5_Regular.ttf</string>
+		<string>FontAwesome5_Solid.ttf</string>
+		<string>FontAwesome6_Brands.ttf</string>
+		<string>FontAwesome6_Regular.ttf</string>
+		<string>FontAwesome6_Solid.ttf</string>
+		<string>Foundation.ttf</string>
+		<string>Ionicons.ttf</string>
+		<string>MaterialIcons.ttf</string>
+		<string>MaterialCommunityIcons.ttf</string>
+		<string>SimpleLineIcons.ttf</string>
+		<string>Octicons.ttf</string>
+		<string>Zocial.ttf</string>
+		<string>Fontisto.ttf</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>

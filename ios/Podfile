@@ -1,12 +1,40 @@
-# Resolve react_native_pods.rb with node to allow for hoisting
-require Pod::Executable.execute_command('node', ['-p',
-  'require.resolve(
-    "react-native/scripts/react_native_pods.rb",
+def node_require(script)
+  # Resolve script with node to allow for hoisting
+  require Pod::Executable.execute_command('node', ['-p',
+  "require.resolve(
+    '#{script}',
     {paths: [process.argv[1]]},
-  )', __dir__]).strip
+    )", __dir__]).strip
+  end
+  
+  node_require('react-native/scripts/react_native_pods.rb')
+  node_require('react-native-permissions/scripts/setup.rb')
 
 platform :ios, min_ios_version_supported
 prepare_react_native_project!
+
+setup_permissions([
+  # 'AppTrackingTransparency',
+  # 'Bluetooth',
+  # 'Calendars',
+  # 'CalendarsWriteOnly',
+  'Camera',
+  # 'Contacts',
+  # 'FaceID',
+  'LocationAccuracy',
+  'LocationAlways',
+  'LocationWhenInUse',
+  'MediaLibrary',
+  'Microphone',
+  # 'Motion',
+  # 'Notifications',
+  'PhotoLibrary',
+  'PhotoLibraryAddOnly',
+  # 'Reminders',
+  # 'Siri',
+  # 'SpeechRecognition',
+  # 'StoreKit',
+])
 
 linkage = ENV['USE_FRAMEWORKS']
 if linkage != nil
@@ -15,12 +43,29 @@ if linkage != nil
 end
 
 target 'leadtotalk71' do
+  # use_frameworks! :linkage => :static
+  rn_maps_path = '../node_modules/react-native-maps'
+  pod 'react-native-google-maps', :path => rn_maps_path
+
+  # Add react-native-permissions pods here
+  # permissions_path = '../../node_modules/react-native-permissions/ios'
+  # permissions_path = '../node_modules/react-native-permissions/ios'
+  
+  # # Include necessary permission handlers
+  # pod 'Permission-Camera', :path => "#{permissions_path}/Camera"
+  # pod 'Permission-LocationWhenInUse', :path => "#{permissions_path}/LocationWhenInUse"
+  # pod 'Permission-PhotoLibrary', :path => "#{permissions_path}/PhotoLibrary"
+
   config = use_native_modules!
 
+  # Uncomment if you need Google Maps integration
+  # pod 'GoogleMaps', :subspecs => ['Maps'], '7.2.0'
+  # pod 'Google-Maps-iOS-Utils'
+
   use_react_native!(
-    :path => config[:reactNativePath],
-    # An absolute path to your application root.
-    :app_path => "#{Pod::Config.instance.installation_root}/.."
+  :path => config[:reactNativePath],  
+  :hermes_enabled => true,  # <-- Added a comma here
+  :app_path => "#{Pod::Config.instance.installation_root}/.."  # <-- Ensure no missing parentheses
   )
 
   post_install do |installer|

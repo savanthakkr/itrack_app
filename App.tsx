@@ -1,131 +1,109 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+import {View, Text, StatusBar, Alert, LogBox, Button} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import AuthStack from './src/component/Navigation/AuthStack';
+import {AuthProvider} from './src/component/Context/AuthContext';
+import FlashMessage from 'react-native-flash-message';
+import * as Sentry from '@sentry/react-native';
+import {AppRegistry} from 'react-native';
+import {name as appName} from './app.json';
 
-import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
-
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
-
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
-
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
-  /*
-   * To keep the template simple and small we're adding padding to prevent view
-   * from rendering under the System UI.
-   * For bigger apps the reccomendation is to use `react-native-safe-area-context`:
-   * https://github.com/AppAndFlow/react-native-safe-area-context
-   *
-   * You can read more about it here:
-   * https://github.com/react-native-community/discussions-and-proposals/discussions/827
-   */
-  const safePadding = '5%';
-
-  return (
-    <View style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        style={backgroundStyle}>
-        <View style={{paddingRight: safePadding}}>
-          <Header/>
-        </View>
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-            paddingHorizontal: safePadding,
-            paddingBottom: safePadding,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
+// Initialize Sentry at the top level
+Sentry.init({
+  dsn: 'https://151aeb0c6f66238267a49e049e73042c@o4509044537950208.ingest.us.sentry.io/4509045388279809',
+  debug: true,  // Important for terminal logs
+  enableAutoSessionTracking: true,
+  tracesSampleRate: 1.0,
 });
 
-export default App;
+AppRegistry.registerComponent(appName, () => Sentry.wrap(App));
+
+
+// Define PromiseRejectionEvent for React Native
+interface PromiseRejectionEvent {
+  reason: any;
+}
+
+// Global Error Handling
+const globalErrorHandler = (error: Error, isFatal?: boolean) => {
+  console.error('Global Error Handler:', error);
+
+  // Send error details to Sentry
+  Sentry.captureException(error);
+
+  // Show alert for better visibility during testing
+  if (isFatal) {
+    Alert.alert(
+      'Unexpected Error Occurred',
+      `
+        An unexpected error occurred. Please restart the app.
+        Error Details: ${error.message}
+      `,
+      [{text: 'OK'}],
+    );
+  }
+};
+
+// Handle uncaught errors
+ErrorUtils.setGlobalHandler(globalErrorHandler);
+
+// Handle unhandled promise rejections
+if (typeof global !== 'undefined' && (global as any).addEventListener) {
+  (global as any).addEventListener(
+    'unhandledrejection',
+    (event: PromiseRejectionEvent) => {
+      Sentry.captureException(event.reason);
+    },
+  );
+}
+
+// Capture Console Errors and Warnings
+const originalConsoleError = console.error;
+console.error = (...args) => {
+  Sentry.captureMessage(args.join(' '));
+  originalConsoleError(...args);
+};
+
+const originalConsoleWarn = console.warn;
+console.warn = (...args) => {
+  Sentry.captureMessage(`Warning: ${args.join(' ')}`);
+  originalConsoleWarn(...args);
+};
+
+// Error Boundary Implementation
+const App = () => {
+  const [hasError, setHasError] = useState(false);
+
+  useEffect(() => {
+    LogBox.ignoreAllLogs(); // Suppress unwanted warnings in development
+  }, []);
+
+  const handleRetry = () => {
+    setHasError(false);
+  };
+
+  // Simulate Error Boundary Handling
+  if (hasError) {
+    return (
+      <View>
+        <Text>Something went wrong!</Text>
+        <Button title="Retry" onPress={handleRetry} />
+      </View>
+    );
+  }
+
+  return (
+    <>
+      <StatusBar
+        animated={true}
+        backgroundColor="#fff"
+        barStyle="dark-content"
+      />
+      <AuthProvider>
+        <AuthStack />
+        <FlashMessage position="bottom" />
+      </AuthProvider>
+    </>
+  );
+};
+
+export default Sentry.wrap(App);
