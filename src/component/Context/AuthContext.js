@@ -6,7 +6,7 @@ import {Alert, Keyboard} from 'react-native';
 import axios from 'axios';
 import {BASE_URL} from '../../../config';
 // import AsyncStorage from '@react-native-async-storage/async-storage';
-// import messaging from '@react-native-firebase/messaging';
+import messaging from '@react-native-firebase/messaging';
 import SplashScreen from '../SplashScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -26,14 +26,18 @@ export const AuthProvider = ({children}) => {
   const [loading, setLoading] = useState(false);
   const [deviceToken, setDevieToken] = useState('');
 
-  // useEffect(() => {
-  //   getDeviceToken();
-  // });
+  useEffect(() => {
+    getDeviceToken();
+  });
 
-  // const getDeviceToken = async () => {
-  //   let token = await messaging().getToken();
-  //   setDevieToken(token);
-  // };
+  const getDeviceToken = async () => {
+    let token = await messaging().getToken();
+    console.log(token);
+    console.log("klsajhsgahsgahsgah");
+    
+    
+    setDevieToken(token);
+  };
 
   // const [collectionLogin, { data: userData, loading: userLoginLoading }] = useMutation(MUTATION_COLLECTION_STAFF_BOY_LOGIN, {
   //     onError(error) {
@@ -154,7 +158,7 @@ export const AuthProvider = ({children}) => {
             body: JSON.stringify({
               username: `${username}`,
               password: `${password}`,
-              // deviceToken: `${deviceToken}`,
+              deviceToken: `${deviceToken}`,
             }),
           });
           const data = await response.json();

@@ -28,6 +28,7 @@ import DeviceInfo from 'react-native-device-info';
 import {RNAndroidLocationEnabler} from 'react-native-android-location-enabler';
 import {accelerometer} from 'react-native-sensors';
 import {map, filter} from 'rxjs/operators';
+import messaging from '@react-native-firebase/messaging';
 import {
   check,
   openSettings,
@@ -55,10 +56,29 @@ export default function Home() {
   );
 
   useEffect(() => {
+    console.log("ansjahshajshagshasjhashjasha");
+    const requestPermission = async () => {
+      const authStatus = await messaging().requestPermission();
+      const enabled =
+        authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+        authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+  
+      if (enabled) {
+        console.log('Notification permission enabled:', authStatus);
+        const fcmToken = await messaging().getToken();
+        console.log('FCM Token:', fcmToken);
+      } else {
+        console.log('Notification permission denied');
+      }
+    };
+  
+    requestPermission();
     getStatus();
     const interval = setInterval(() => {
       setCurrentTime(moment().tz('Australia/Melbourne'));
     }, 1000);
+
+    
 
     return () => clearInterval(interval);
   }, []);
